@@ -22,6 +22,12 @@
             padding: 0;
         }
 
+        html {
+            width: 100%;
+            height: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+
         body {
             font-family: var(--font-main);
             background: var(--bg-gradient);
@@ -31,8 +37,11 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            min-height: 100dvh;
             color: var(--text-main);
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
+            width: 100%;
         }
 
         @keyframes gradientBG {
@@ -97,6 +106,11 @@
             outline: none;
             font-size: 0.9rem;
             transition: box-shadow 0.3s;
+        }
+
+        input,
+        button {
+            touch-action: manipulation;
         }
 
         input:focus {
@@ -284,15 +298,22 @@
         @media (max-width: 768px) {
             .container {
                 width: 90%;
-                min-height: auto;
+                max-width: 420px;
                 display: flex;
                 flex-direction: column;
                 min-height: 600px;
                 border-radius: 20px;
+                max-height: none;
+                overflow: hidden;
+                margin: 1rem auto;
             }
 
             body {
                 padding: 1rem;
+                align-items: center;
+                justify-content: center;
+                padding-top: max(1rem, env(safe-area-inset-top));
+                padding-bottom: max(1rem, env(safe-area-inset-bottom));
             }
 
             .overlay-container {
@@ -306,15 +327,33 @@
                 transition: none;
                 padding: 2rem 1.5rem;
                 display: none;
+                overflow: visible;
+            }
+
+            .sign-in-container,
+            .sign-up-container {
+                left: 0;
+                width: 100%;
+                opacity: 1;
+                transform: none;
+                z-index: 2;
+            }
+
+            .container.right-panel-active .sign-in-container,
+            .container.right-panel-active .sign-up-container {
+                transform: none;
+                opacity: 1;
+                animation: none;
             }
             
             .form-container.mobile-active {
-                display: flex;
+                display: block;
                 animation: fadeIn 0.5s;
             }
 
             form {
                 padding: 0;
+                height: auto;
             }
 
             h1 {
@@ -365,6 +404,7 @@
                 width: 95%;
                 min-height: 550px;
                 border-radius: 15px;
+                margin: 0.75rem auto;
             }
 
             body {
