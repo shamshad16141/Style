@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #f0f4fc 0%, #e9eefa 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 2rem;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #12131a;
+            margin-bottom: 1rem;
+        }
+
+        .amount-display {
+            background: #f8faff;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            border: 2px solid #e8ecf5;
+        }
+
+        .amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2a3ff2;
+            margin-bottom: 0.5rem;
+        }
+
+        .amount-label {
+            color: #6a6f82;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            color: #2d3242;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.8rem;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #12131a;
+            box-shadow: 0 0 0 3px rgba(18,19,26,0.1);
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #12131a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2a3ff2;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(42,63,242,0.2);
+        }
+
+        .btn-secondary {
+            background: #f0f3fc;
+            color: #12131a;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .security-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6a6f82;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+            perspective: 1000px;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            width: 240px;
+            height: 154px;
+            perspective: 1000px;
+            color: white;
+        }
+
+        .heading_8264 {
+            position: absolute;
+            letter-spacing: .2em;
+            font-size: 0.5em;
+            top: 2em;
+            left: 18.6em;
+        }
+
+        .logo {
+            position: absolute;
+            top: 6.8em;
+            left: 11.7em;
+        }
+
+        .chip {
+            position: absolute;
+            top: 2.3em;
+            left: 1.5em;
+        }
+
+        .contactless {
+            position: absolute;
+            top: 3.5em;
+            left: 12.4em;
+        }
+
+        .number {
+            position: absolute;
+            font-weight: bold;
+            font-size: .6em;
+            top: 8.3em;
+            left: 1.6em;
+        }
+
+        .valid_thru {
+            position: absolute;
+            font-weight: bold;
+            top: 635.8em;
+            font-size: .01em;
+            left: 140.3em;
+        }
+
+        .date_8264 {
+            position: absolute;
+            font-weight: bold;
+            font-size: 0.5em;
+            top: 13.6em;
+            left: 3.2em;
+        }
+
+        .name {
+            position: absolute;
+            font-weight: bold;
+            font-size: 0.5em;
+            top: 16.1em;
+            left: 2em;
+        }
+
+        .strip {
+            position: absolute;
+            background-color: black;
+            width: 15em;
+            height: 1.5em;
+            top: 2.4em;
+            background: repeating-linear-gradient(
+                45deg,
+                #303030,
+                #303030 10px,
+                #202020 10px,
+                #202020 20px
+            );
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            box-shadow: 0 8px 14px 0 rgba(0,0,0,0.2);
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+        }
+
+        .flip-card-front {
+            box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 2px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -1px 0px inset;
+            background-color: #171717;
+        }
+
+        .flip-card-back {
+            box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 2px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -1px 0px inset;
+            background-color: #171717;
+            transform: rotateY(180deg);
+            position: relative;
+        }
+
+        .form-section {
+            background: #f8faff;
+            border-radius: 1.2rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid #e8ecf5;
+        }
+
+        .form-section h3 {
+            color: #12131a;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .hidden-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .hidden-inputs input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.8rem;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hidden-inputs input:focus {
+            outline: none;
+            border-color: #12131a;
+            box-shadow: 0 0 0 3px rgba(18,19,26,0.1);
+        }
+
+        .confirm-button {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0;
+            width: 100%;
+            justify-content: center;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0.9em;
+        }
+
+        .confirm-button button {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 0.6rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .confirm-button .btn-back {
+            display: none;
+        }
+
+        .confirm-button .btn-confirm {
+            background: white;
+            color: #1a1a1a;
+            font-weight: bold;
+            max-width: 200px;
+        }
+
+        .confirm-button .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 2rem 1.5rem;
+                border-radius: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.7rem;
+            }
+
+            .amount-display {
+                padding: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .amount {
+                font-size: 2rem;
+            }
+
+            .form-group {
+                margin-bottom: 1.2rem;
+            }
+
+            label {
+                font-size: 0.85rem;
+            }
+
+            input {
+                padding: 0.7rem 0.8rem;
+                font-size: 16px;
+                border-radius: 0.6rem;
+            }
+
+            .row {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.8rem;
+            }
+
+            .btn-group {
+                gap: 0.8rem;
+            }
+
+            .btn {
+                padding: 0.8rem;
+                min-height: 44px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.75rem;
+            }
+
+            .container {
+                padding: 1.5rem 1rem;
+                border-radius: 1.2rem;
+                box-shadow: 0 15px 30px -12px rgba(0,0,0,0.15);
+            }
+
+            h1 {
+                font-size: 1.4rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .amount-display {
+                padding: 1rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .amount {
+                font-size: 1.8rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .amount-label {
+                font-size: 0.8rem;
+            }
+
+            .form-group {
+                margin-bottom: 1rem;
+            }
+
+            label {
+                font-size: 0.8rem;
+                margin-bottom: 0.3rem;
+            }
+
+            input {
+                padding: 0.65rem 0.75rem;
+                font-size: 16px;
+                border-radius: 0.5rem;
+            }
+
+            .row {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.6rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                gap: 0.6rem;
+                margin-top: 1rem;
+            }
+
+            .btn {
+                padding: 0.7rem;
+                font-size: 0.8rem;
+            }
+
+            .security-info {
+                font-size: 0.75rem;
+                margin-top: 0.8rem;
+                padding-top: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Payment</h1>
+
+        <div id="message" class="message"></div>
+
+        <div class="amount-display">
+            <div class="amount" id="amountDisplay">$0.00</div>
+            <div class="amount-label">Total Amount Due</div>
+        </div>
+
+        <form id="paymentForm">
+            <!-- Input fields section -->
+            <div class="form-section">
+                <h3>Card Details</h3>
+                <div class="hidden-inputs">
+                    <input type="text" id="cardName" name="cardName" placeholder="Full Name (e.g., John Doe)" required>
+                    <input type="text" id="cardNumber" name="cardNumber" placeholder="Card Number (1234 5678 9012 3456)" required maxlength="19">
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+                        <input type="text" id="expiry" name="expiry" placeholder="Expiry (MM/YY)" required maxlength="5">
+                        <input type="text" id="cvv" name="cvv" placeholder="CVV" required maxlength="4">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flip Card Display -->
+            <div class="card-container">
+                <div class="flip-card" id="flipCard">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <p class="heading_8264">MASTERCARD</p>
+                            <svg class="logo" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="36" height="36" viewBox="0 0 48 48">
+                                <path fill="#ff9800" d="M32 10A14 14 0 1 0 32 38A14 14 0 1 0 32 10Z"></path>
+                                <path fill="#d50000" d="M16 10A14 14 0 1 0 16 38A14 14 0 1 0 16 10Z"></path>
+                                <path fill="#ff3d00" d="M18,24c0,4.755,2.376,8.95,6,11.48c3.624-2.53,6-6.725,6-11.48s-2.376-8.95-6-11.48 C20.376,15.05,18,19.245,18,24z"></path>
+                            </svg>
+                            <svg version="1.1" class="chip" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 50 50" xml:space="preserve">
+                                <image id="image0" width="50" height="50" x="0" y="0" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+                                AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAB6VBMVEUAAACNcTiVeUKVeUOY
+                                fEaafEeUeUSYfEWZfEaykleyklaXe0SWekSZZjOYfEWYe0WXfUWXe0WcgEicfkiXe0SVekSXekSW
+                                ekKYe0a9nF67m12ZfUWUeEaXfESVekOdgEmVeUWWekSniU+VeUKVeUOrjFKYfEWliE6WeESZe0GS
+                                e0WYfES7ml2Xe0WXeESUeEOWfEWcf0eWfESXe0SXfEWYekSVeUKXfEWxklawkVaZfEWWekOUekOW
+                                ekSYfESZe0eXekWYfEWZe0WZe0eVeUSWeETAnmDCoWLJpmbxy4P1zoXwyoLIpWbjvXjivnjgu3bf
+                                u3beunWvkFWxkle/nmDivXiWekTnwXvkwHrCoWOuj1SXe0TEo2TDo2PlwHratnKZfEbQrWvPrWua
+                                fUfbt3PJp2agg0v0zYX0zYSfgkvKp2frxX7mwHrlv3rsxn/yzIPgvHfduXWXe0XuyIDzzISsjVO1
+                                lVm0lFitjVPzzIPqxX7duna0lVncuHTLqGjvyIHeuXXxyYGZfUayk1iyk1e2lln1zYTEomO2llrb
+                                tnOafkjFpGSbfkfZtXLhvHfkv3nqxH3mwXujhU3KqWizlFilh06khk2fgkqsjlPHpWXJp2erjVOh
+                                g0yWe0SliE+XekShhEvAn2D///+gx8TWAAAARnRSTlMACVCTtsRl7Pv7+vxkBab7pZv5+ZlL/UnU
+                                /f3SJCVe+Fx39naA9/75XSMh0/3SSkia+pil/KRj7Pr662JPkrbP7OLQ0JFOijI1MwAAAAFiS0dE
+                                orDd34wAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfnAg0IDx2lsiuJAAACLElEQVRIx2Ng
+                                GAXkAUYmZhZWPICFmYkRVQcbOwenmzse4MbFzc6DpIGXj8PD04sA8PbhF+CFaxEU8iWkAQT8hEVg
+                                OkTF/InR4eUVICYO1SIhCRMLDAoKDvFDVhUaEhwUFAjjSUlDdMiEhcOEItzdI6OiYxA6YqODIt3d
+                                I2DcuDBZsBY5eVTr4xMSYcyk5BRUOXkFsBZFJTQnp6alQxgZmVloUkrKYC0qqmji2WE5EEZuWB6a
+                                lKoKdi35YQUQRkFYPpFaCouKIYzi6EDitJSUlsGY5RWVRGjJLyxNy4ZxqtIqqvOxaVELQwZFZdkI
+                                JVU1RSiSalAt6rUwUBdWG1CP6pT6gNqwOrgCdQyHNYR5YQFhDXj8MiK1IAeyN6aORiyBjByVTc0F
+                                qBoKWpqwRCVSgilOaY2OaUPw29qjOzqLvTAchpos47u6EZyYnngUSRwpuTe6D+6qaFQdOPNLRzOM
+                                1dzhRZyW+CZouHk3dWLXglFcFIflQhj9YWjJGlZcaKAVSvjyPrRQ0oQVKDAQHlYFYUwIm4gqExGm
+                                BSkutaVQJeomwViTJqPK6OhCy2Q9sQBk8cY0DxjTJw0lAQWK6cOKfgNhpKK7ZMpUeF3jPa28BCET
+                                amiEqJKM+X1gxvWXpoUjVIVPnwErw71nmpgiqiQGBjNzbgs3j1nus+fMndc+Cwm0T52/oNR9lsdC
+                                S24ra7Tq1cbWjpXV3sHRCb1idXZ0sGdltXNxRateRwHRAACYHutzk/2I5QAAACV0RVh0ZGF0ZTpj
+                                cmVhdGUAMjAyMy0wMi0xM1QwODoxNToyOSswMDowMEUnN7UAAAAldEVYdGRhdGU6bW9kaWZ5ADIw
+                                MjMtMDItMTNUMDg6MTU6MjkrMDA6MDA0eo8JAAAAKHRFWHRkYXRlOnRpbWVzdGFtcAAyMDIzLTAy
+                                LTEzVDA4OjE1OjI5KzAwOjAwY2+u1gAAAABJRU5ErkJggg=="></image>
+                            </svg>
+                            <svg version="1.1" class="contactless" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 50 50" xml:space="preserve">
+                                <image id="image0" width="50" height="50" x="0" y="0" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAQAAAC0NkA6AAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+                                AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAAJcEhZ
+                                cwAACxMAAAsTAQCanBgAAAAHdElNRQfnAg0IEzgIwaKTAAADDklEQVRYw+1XS0iUURQ+f5qPyjQf
+                                lGRFEEFK76koKGxRbWyVVLSOgsCgwjZBJJYuKogSIoOonUK4q3U0WVBWFPZYiIE6kuArG3VGzK/F
+                                fPeMM/MLt99/NuHdfPd888/57jn3nvsQWWj/VcMlvMMd5KRTogqx9iCdIjUUmcGR9ImUYowyP3xN
+                                GQJoRLVaZ2DaZf8kyjEJALhI28ELioyiwC+Rc3QZwRYyO/DH51hQgWm6DMIh10KmD4u9O16K49it
+                                VoPOAmcGAWWOepXIRScAoJZ2Frro8oN+EyTT6lWkkg6msZfMSR35QTJmjU0g15tIGSJ08ZZMJkJk
+                                HpNZgSkyXosS13TkJpZ62mPIJvOSzC1bp8vRhhCakEk7G9/o4gmZdbpsTcKu0m63FbnBP9Qrc15z
+                                bkbemfgNDtEOI8NO5L5O9VYyRYgmJayZ9nPaxZrSjW4+F6Uw9yQqIiIZwhp2huQTf6OIvCZyGM6g
+                                DJBZbyXifJXr7FZjGXsdxADxI7HUJFB6iWvsIhFpkoiIiGTJfjJfiCuJg2ZEspq9EHGVpYgzKqwJ
+                                qSAOEwuJQ/pxPvE3cYltJCLdxBLiSKKIE5HxJKcTRNeadxfhDiuYw44zVs1dxKwRk/uCxIiQkxKB
+                                sSctRVAge9g1E15EHE6yRUaJecRxcWlukdRIbGFOSZCMWQA/iWauIP3slREHXPyliqBcrrD71Amz
+                                Z+rD1Mt2Yr8TZc/UR4/YtFnbijnHi3UrN9vKQ9rPaJf867ZiaqDB+czeKYmd3pNa6fuI75MiC0uX
+                                XSR5aEMf7s7a6r/PudVXkjFb/SsrCRfROk0Fx6+H1i9kkTGn/E1vEmt1m089fh+RKdQ5O+xNJPUi
+                                cUIjO0Dm7HwvErEr0YxeibL1StSh37STafE4I7zcBdRq1DiOkdmlTJVnkQTBTS7X1FYyvfO4piaI
+                                nKbDCDaT2anLudYXCRFsQBgAcIF2/Okwgvz5+Z4tsw118dzruvIvjhTB+HOuWy8UvovEH6beitBK
+                                xDyxm9MmISKCWrzB7bSlaqGlsf0FC0gMjzTg6GgAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjMtMDIt
+                                MTNUMDg6MTk6NTYrMDA6MDCjlq7LAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIzLTAyLTEzVDA4OjE5
+                                OjU2KzAwOjAw0ssWdwAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyMy0wMi0xM1QwODoxOTo1Nisw
+                                MDowMIXeN6gAAAAASUVORK5CYII="></image>
+                            </svg>
+                            <p class="number" id="displayCardNumber">•••• •••• •••• ••••</p>
+                            <p class="valid_thru">VALID THRU</p>
+                            <p class="date_8264" id="displayExpiry">MM/YY</p>
+                            <p class="name" id="displayName">YOUR NAME</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="strip"></div>
+                            <div class="confirm-button">
+                                <button type="submit" class="btn-confirm">Confirm Payment</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+            </div>
+
+            <div class="security-info">
+                <i class="fas fa-lock"></i>
+                <span>Your payment information is secure and encrypted</span>
+            </div>
+        </form>
+    </div>
+
+    <script src="api-utils.js"></script>
+    <script>
+        // Service pricing mapping
+        const servicePrices = {
+            'Haircut': 25,
+            'Beard Trim': 15,
+            'Hair Wash': 10,
+            'Shave': 20,
+            'Hair Coloring': 40,
+            'Package Deal': 45,
+            'Classic Shave': 20
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = getUserFromSession();
+            if (!user) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            // Get selected service from sessionStorage and display correct amount
+            const selectedService = sessionStorage.getItem('selectedService') || 'Haircut';
+            const amount = servicePrices[selectedService] || 25;
+            document.getElementById('amountDisplay').textContent = `$${amount.toFixed(2)}`;
+
+            document.getElementById('paymentForm').addEventListener('submit', handlePayment);
+            
+            // Update card display in real time
+            document.getElementById('cardName').addEventListener('input', updateCardDisplay);
+            document.getElementById('cardNumber').addEventListener('input', updateCardDisplay);
+            document.getElementById('expiry').addEventListener('input', updateCardDisplay);
+            document.getElementById('cvv').addEventListener('input', updateCardDisplay);
+        });
+
+        function updateCardDisplay() {
+            const cardName = document.getElementById('cardName').value || 'YOUR NAME';
+            const cardNumber = document.getElementById('cardNumber').value || '';
+            const expiry = document.getElementById('expiry').value || 'MM/YY';
+            const cvv = document.getElementById('cvv').value || '';
+
+            // Update front of card
+            document.getElementById('displayName').textContent = cardName.toUpperCase();
+            document.getElementById('displayExpiry').textContent = expiry || 'MM/YY';
+            
+            // Format and display card number
+            const formattedNumber = formatCardNumber(cardNumber);
+            const displayNumber = formattedNumber.length > 0 ? formattedNumber : '•••• •••• •••• ••••';
+            document.getElementById('displayCardNumber').textContent = displayNumber;
+            
+            // Update back of card - mask CVV except last digit
+            const maskedCVV = cvv.length > 0 ? '*'.repeat(Math.max(0, cvv.length - 1)) + cvv.charAt(cvv.length - 1) : '•••';
+            const displayCVV = document.getElementById('displayCVV');
+            if (displayCVV) {
+                displayCVV.textContent = maskedCVV;
+            }
+        }
+
+        function formatCardNumber(value) {
+            return value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
+        }
+
+        function formatExpiry(value) {
+            return value.replace(/\D/g, '').replace(/(\d{2})(\d{0,2})/, '$1/$2').substring(0, 5);
+        }
+
+        document.getElementById('cardNumber').addEventListener('input', (e) => {
+            e.target.value = formatCardNumber(e.target.value);
+            updateCardDisplay();
+        });
+
+        document.getElementById('expiry').addEventListener('input', (e) => {
+            e.target.value = formatExpiry(e.target.value);
+            updateCardDisplay();
+        });
+
+        async function handlePayment(e) {
+            e.preventDefault();
+            const messageDiv = document.getElementById('message');
+            messageDiv.classList.remove('show');
+
+            // In a real application, you would send this to a payment processor
+            // For now, we'll just simulate a successful payment
+            messageDiv.textContent = '✓ Payment processed successfully! Redirecting...';
+            messageDiv.className = 'message success show';
+
+            setTimeout(() => {
+                window.location.href = '/summary.html';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

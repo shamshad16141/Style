@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Stylist Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #f5f7fe 0%, #f0f3fc 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 2rem;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #12131a;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            gap: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #12131a;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .ai-icon {
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            color: #6a6f82;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .chat-container {
+            background: #f8faff;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            height: 400px;
+            overflow-y: auto;
+            border: 2px solid #e8ecf5;
+        }
+
+        .message {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .message.ai {
+            flex-direction: row;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .message.ai .message-avatar {
+            background: #2a3ff2;
+            color: white;
+        }
+
+        .message.user .message-avatar {
+            background: #e8ecf5;
+            color: #12131a;
+        }
+
+        .message-content {
+            background: white;
+            padding: 1rem;
+            border-radius: 1rem;
+            max-width: 80%;
+        }
+
+        .message.user .message-content {
+            background: #2a3ff2;
+            color: white;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.8rem;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #12131a;
+            box-shadow: 0 0 0 3px rgba(18,19,26,0.1);
+        }
+
+        .send-btn {
+            background: #12131a;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.8rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            background: #2a3ff2;
+        }
+
+        .recommendations {
+            background: #dcfce7;
+            border: 2px solid #bbf7d0;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .recommendations h3 {
+            color: #166534;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .recommendations ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .recommendations li {
+            color: #166534;
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .recommendations li:before {
+            content: "✓";
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 1.5rem;
+                border-radius: 1.5rem;
+            }
+
+            .back-btn {
+                font-size: 0.9rem;
+                margin-bottom: 1.5rem;
+                min-height: 44px;
+                padding: 0.5rem 1rem;
+            }
+
+            h1 {
+                font-size: 1.7rem;
+                gap: 0.5rem;
+            }
+
+            .ai-icon {
+                font-size: 1.8rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .chat-container {
+                height: 350px;
+                padding: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .message {
+                margin-bottom: 1rem;
+                gap: 0.8rem;
+            }
+
+            .message-content {
+                max-width: 75%;
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .input-group {
+                gap: 0.6rem;
+            }
+
+            input {
+                padding: 0.7rem 0.8rem;
+                font-size: 16px;
+                border-radius: 0.6rem;
+            }
+
+            .send-btn {
+                padding: 0.7rem 1.2rem;
+                min-height: 44px;
+                font-size: 0.85rem;
+            }
+
+            .recommendations {
+                padding: 1.2rem;
+                margin-top: 1.5rem;
+            }
+
+            .recommendations h3 {
+                font-size: 1rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .recommendations li {
+                font-size: 0.9rem;
+                padding: 0.4rem 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.75rem;
+            }
+
+            .container {
+                padding: 1rem;
+                border-radius: 1.2rem;
+                box-shadow: 0 15px 30px -12px rgba(0,0,0,0.15);
+            }
+
+            .back-btn {
+                font-size: 0.8rem;
+                margin-bottom: 1rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            h1 {
+                font-size: 1.4rem;
+                margin-bottom: 0.3rem;
+                gap: 0.3rem;
+            }
+
+            .ai-icon {
+                font-size: 1.5rem;
+            }
+
+            .subtitle {
+                font-size: 0.8rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .chat-container {
+                height: 300px;
+                padding: 1rem;
+                margin-bottom: 1.2rem;
+                border-radius: 1rem;
+            }
+
+            .message {
+                margin-bottom: 0.8rem;
+                gap: 0.6rem;
+            }
+
+            .message-avatar {
+                width: 35px;
+                height: 35px;
+                font-size: 1.2rem;
+            }
+
+            .message-content {
+                max-width: 85%;
+                padding: 0.6rem;
+                border-radius: 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .input-group {
+                gap: 0.5rem;
+            }
+
+            input {
+                padding: 0.6rem 0.75rem;
+                font-size: 16px;
+                border-radius: 0.5rem;
+            }
+
+            .send-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+                white-space: nowrap;
+            }
+
+            .recommendations {
+                padding: 1rem;
+                margin-top: 1rem;
+                border-radius: 0.8rem;
+            }
+
+            .recommendations h3 {
+                font-size: 0.95rem;
+                margin-bottom: 0.6rem;
+            }
+
+            .recommendations li {
+                font-size: 0.8rem;
+                padding: 0.3rem 0;
+                gap: 0.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/dashboard.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+
+        <h1>
+            <span class="ai-icon">🤖</span>
+            AI Stylist Assistant
+        </h1>
+        <p class="subtitle">Get personalized grooming recommendations from our AI assistant</p>
+
+        <div class="chat-container" id="chatContainer">
+            <div class="message ai">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    Hello! I'm your AI stylist assistant. Tell me about your hair type, preferred style, or any grooming concerns, and I'll provide personalized recommendations!
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="userInput" placeholder="Ask me about grooming tips...">
+            <button class="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+
+        <div class="recommendations">
+            <h3>Popular Recommendations</h3>
+            <ul>
+                <li>Regular haircuts every 3-4 weeks</li>
+                <li>Weekly beard maintenance routine</li>
+                <li>Use quality grooming products</li>
+                <li>Consult with a professional stylist</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="api-utils.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = getUserFromSession();
+            if (!user) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            document.getElementById('userInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+        });
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            const chatContainer = document.getElementById('chatContainer');
+            
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerHTML = `
+                <div class="message-avatar">👤</div>
+                <div class="message-content">${message}</div>
+            `;
+            chatContainer.appendChild(userMsg);
+
+            input.value = '';
+
+            // Simulate AI response
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'message ai';
+                aiMsg.innerHTML = `
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        That's a great question! Based on your inquiry, I recommend booking a consultation with one of our professional stylists. They can provide personalized advice tailored to your specific needs and hair type.
+                    </div>
+                `;
+                chatContainer.appendChild(aiMsg);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 500);
+
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    </script>
+</body>
+</html>

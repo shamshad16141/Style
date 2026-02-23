@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #f2f6fe 0%, #e9effb 100%);
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #12131a;
+        }
+
+        .logout-btn {
+            background: #12131a;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 0.8rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #2a3ff2;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .stat-label {
+            color: #6a6f82;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #12131a;
+        }
+
+        .table-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .table-section h2 {
+            font-size: 1.5rem;
+            color: #12131a;
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8faff;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #12131a;
+            border-bottom: 2px solid #e8ecf5;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e8ecf5;
+            color: #6a6f82;
+        }
+
+        tr:hover {
+            background: #f8faff;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-confirmed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Admin Dashboard</h1>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Bookings</div>
+                <div class="stat-value" id="totalBookings">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Customers</div>
+                <div class="stat-value" id="totalCustomers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Confirmed Today</div>
+                <div class="stat-value" id="confirmedToday">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Revenue</div>
+                <div class="stat-value" id="revenue">$0</div>
+            </div>
+        </div>
+
+        <div class="table-section">
+            <h2>Recent Bookings</h2>
+            <table id="bookingsTable">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Customer</th>
+                        <th>Service</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 2rem;">Loading...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="api-utils.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = getUserFromSession();
+            if (!user || user.role !== 'admin') {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            loadAdminData();
+        });
+
+        async function loadAdminData() {
+            try {
+                const bookings = await APIFetch('/api/bookings');
+                
+                if (Array.isArray(bookings)) {
+                    document.getElementById('totalBookings').textContent = bookings.length;
+                    
+                    const confirmed = bookings.filter(b => b.status === 'confirmed').length;
+                    document.getElementById('confirmedToday').textContent = confirmed;
+
+                    const revenue = bookings.reduce((sum, b) => sum + (b.price || 25), 0);
+                    document.getElementById('revenue').textContent = '$' + revenue;
+
+                    populateTable(bookings);
+                }
+            } catch (error) {
+                console.log('Error loading data:', error);
+            }
+        }
+
+        function populateTable(bookings) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = bookings.map(b => `
+                <tr>
+                    <td>${b._id.substring(0, 8)}</td>
+                    <td>${b.customerName || 'Unknown'}</td>
+                    <td>${b.serviceName || '-'}</td>
+                    <td>${new Date(b.date).toLocaleDateString()}</td>
+                    <td>${b.time || '-'}</td>
+                    <td>
+                        <span class="status-badge status-${b.status}">
+                            ${b.status.charAt(0).toUpperCase() + b.status.slice(1)}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+
+            if (bookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No bookings found</td></tr>';
+            }
+        }
+
+        async function APIFetch(url) {
+            try {
+                const response = await fetch(url);
+                return await response.json();
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        function logout() {
+            clearUserSession();
+            window.location.href = '/login.html';
+        }
+    </script>
+</body>
+</html>

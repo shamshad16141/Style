@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #f2f6fe 0%, #e9effb 100%);
+            padding: 2rem 1.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #12131a;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            gap: 1rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #12131a;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #6a6f82;
+            font-size: 1.1rem;
+        }
+
+        .barbers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .barber-card {
+            background: transparent;
+            border-radius: 1.5rem;
+            height: 320px;
+            perspective: 1000px;
+            transition: transform 0.3s ease;
+        }
+
+        .barber-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .barber-card.flipped .barber-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .barber-card-front,
+        .barber-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .barber-card-back {
+            transform: rotateY(180deg);
+        }
+
+        .barber-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .barber-card:hover .barber-card-front,
+        .barber-card:hover .barber-card-back {
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
+        }
+
+        .barber-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .barber-card-front .barber-content {
+            justify-content: flex-end;
+        }
+
+        .barber-name {
+            font-size: 1.45rem;
+            font-weight: 600;
+            color: #12131a;
+            margin-bottom: 0.3rem;
+        }
+
+        .barber-title {
+            color: #2a3ff2;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .barber-bio {
+            color: #6a6f82;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: #fbbf24;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .rating .stars {
+            color: #fbbf24;
+        }
+
+        .rating .count {
+            color: #6a6f82;
+            margin-left: 0.3rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #12131a;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.8rem;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #2a3ff2;
+            transform: scale(1.02);
+        }
+
+        .barber-card-front .btn {
+            margin-top: auto;
+        }
+
+        .card-actions {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .btn-secondary {
+            background: #e9edf7;
+            color: #12131a;
+        }
+
+        .btn-secondary:hover {
+            background: #dfe5f3;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .back-btn {
+                font-size: 0.9rem;
+                margin-bottom: 1.5rem;
+                min-height: 44px;
+                padding: 0.5rem 1rem;
+            }
+
+            header {
+                margin-bottom: 2rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 0.95rem;
+            }
+
+            .barbers-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .barber-card {
+                height: 300px;
+            }
+
+            .barber-card:hover {
+                transform: translateY(-4px);
+            }
+
+            .barber-card-front,
+            .barber-card-back {
+                box-shadow: 0 5px 15px -5px rgba(0,0,0,0.1);
+            }
+
+            .barber-content {
+                padding: 1.2rem;
+            }
+
+            .barber-name {
+                font-size: 1.3rem;
+            }
+
+            .barber-title {
+                font-size: 0.95rem;
+            }
+
+            .btn {
+                padding: 0.8rem 1.2rem;
+                min-height: 44px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.75rem;
+            }
+
+            .back-btn {
+                font-size: 0.8rem;
+                margin-bottom: 1rem;
+            }
+
+            header {
+                margin-bottom: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .subtitle {
+                font-size: 0.85rem;
+            }
+
+            .barbers-grid {
+                gap: 1rem;
+            }
+
+            .barber-card {
+                height: 270px;
+            }
+
+            .barber-card-front,
+            .barber-card-back {
+                border-radius: 1rem;
+            }
+
+            .barber-content {
+                padding: 1rem;
+            }
+
+            .barber-name {
+                font-size: 1.15rem;
+                margin-bottom: 0.2rem;
+            }
+
+            .barber-title {
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .barber-bio {
+                font-size: 0.9rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .rating {
+                font-size: 0.8rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .btn {
+                padding: 0.7rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/dashboard.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+
+        <header>
+            <h1>Our Professional Stylists</h1>
+            <p class="subtitle">Meet our experienced team of grooming professionals</p>
+        </header>
+
+        <div class="barbers-grid">
+            <div class="barber-card">
+                <div class="barber-card-inner">
+                    <div class="barber-card-front">
+                        <div class="barber-content">
+                            <div class="barber-name">Michael Johnson</div>
+                            <div class="barber-title">Master Stylist</div>
+                            <button class="btn" type="button" onclick="flipBarberCard(event, this)">View Info</button>
+                        </div>
+                    </div>
+                    <div class="barber-card-back">
+                        <div class="barber-content">
+                            <div class="barber-name">Michael Johnson</div>
+                            <div class="barber-title">Master Stylist</div>
+                            <div class="barber-bio">Expert in classic cuts and modern styles with 10+ years of experience.</div>
+                            <div class="rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="count">(48 reviews)</span>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn" onclick="bookWithBarber('Michael Johnson')">Book Appointment</button>
+                                <button class="btn btn-secondary" type="button" onclick="flipBarberCard(event, this)">Back</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="barber-card">
+                <div class="barber-card-inner">
+                    <div class="barber-card-front">
+                        <div class="barber-content">
+                            <div class="barber-name">James Smith</div>
+                            <div class="barber-title">Senior Barber</div>
+                            <button class="btn" type="button" onclick="flipBarberCard(event, this)">View Info</button>
+                        </div>
+                    </div>
+                    <div class="barber-card-back">
+                        <div class="barber-content">
+                            <div class="barber-name">James Smith</div>
+                            <div class="barber-title">Senior Barber</div>
+                            <div class="barber-bio">Specializes in beard design and fades with 8+ years of expertise.</div>
+                            <div class="rating">
+                                <span class="stars">★★★★☆</span>
+                                <span class="count">(36 reviews)</span>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn" onclick="bookWithBarber('James Smith')">Book Appointment</button>
+                                <button class="btn btn-secondary" type="button" onclick="flipBarberCard(event, this)">Back</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="barber-card">
+                <div class="barber-card-inner">
+                    <div class="barber-card-front">
+                        <div class="barber-content">
+                            <div class="barber-name">Sarah Davis</div>
+                            <div class="barber-title">Hair Specialist</div>
+                            <button class="btn" type="button" onclick="flipBarberCard(event, this)">View Info</button>
+                        </div>
+                    </div>
+                    <div class="barber-card-back">
+                        <div class="barber-content">
+                            <div class="barber-name">Sarah Davis</div>
+                            <div class="barber-title">Hair Specialist</div>
+                            <div class="barber-bio">Color expert with 6+ years creating stunning transformations.</div>
+                            <div class="rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="count">(52 reviews)</span>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn" onclick="bookWithBarber('Sarah Davis')">Book Appointment</button>
+                                <button class="btn btn-secondary" type="button" onclick="flipBarberCard(event, this)">Back</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="barber-card">
+                <div class="barber-card-inner">
+                    <div class="barber-card-front">
+                        <div class="barber-content">
+                            <div class="barber-name">Robert Brown</div>
+                            <div class="barber-title">Premium Barber</div>
+                            <button class="btn" type="button" onclick="flipBarberCard(event, this)">View Info</button>
+                        </div>
+                    </div>
+                    <div class="barber-card-back">
+                        <div class="barber-content">
+                            <div class="barber-name">Robert Brown</div>
+                            <div class="barber-title">Premium Barber</div>
+                            <div class="barber-bio">Luxury grooming specialist dedicated to perfection.</div>
+                            <div class="rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="count">(44 reviews)</span>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn" onclick="bookWithBarber('Robert Brown')">Book Appointment</button>
+                                <button class="btn btn-secondary" type="button" onclick="flipBarberCard(event, this)">Back</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="barber-card">
+                <div class="barber-card-inner">
+                    <div class="barber-card-front">
+                        <div class="barber-content">
+                            <div class="barber-name">Emily Wilson</div>
+                            <div class="barber-title">Creative Stylist</div>
+                            <button class="btn" type="button" onclick="flipBarberCard(event, this)">View Info</button>
+                        </div>
+                    </div>
+                    <div class="barber-card-back">
+                        <div class="barber-content">
+                            <div class="barber-name">Emily Wilson</div>
+                            <div class="barber-title">Creative Stylist</div>
+                            <div class="barber-bio">Trendsetter with 7+ years creating unique styles.</div>
+                            <div class="rating">
+                                <span class="stars">★★★★☆</span>
+                                <span class="count">(40 reviews)</span>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn" onclick="bookWithBarber('Emily Wilson')">Book Appointment</button>
+                                <button class="btn btn-secondary" type="button" onclick="flipBarberCard(event, this)">Back</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="barber-card">
+                <div class="barber-card-inner">
+                    <div class="barber-card-front">
+                        <div class="barber-content">
+                            <div class="barber-name">David Martinez</div>
+                            <div class="barber-title">Grooming Guru</div>
+                            <button class="btn" type="button" onclick="flipBarberCard(event, this)">View Info</button>
+                        </div>
+                    </div>
+                    <div class="barber-card-back">
+                        <div class="barber-content">
+                            <div class="barber-name">David Martinez</div>
+                            <div class="barber-title">Grooming Guru</div>
+                            <div class="barber-bio">All-rounder with 9+ years serving our community.</div>
+                            <div class="rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="count">(50 reviews)</span>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn" onclick="bookWithBarber('David Martinez')">Book Appointment</button>
+                                <button class="btn btn-secondary" type="button" onclick="flipBarberCard(event, this)">Back</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="api-utils.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = getUserFromSession();
+            if (!user) {
+                window.location.href = '/login.html';
+            }
+        });
+
+        function bookWithBarber(barberName) {
+            sessionStorage.setItem('selectedBarber', barberName);
+            window.location.href = '/booking.html';
+        }
+
+        function flipBarberCard(event, buttonElement) {
+            event.stopPropagation();
+            const cardElement = buttonElement.closest('.barber-card');
+            cardElement.classList.toggle('flipped');
+        }
+    </script>
+</body>
+</html>

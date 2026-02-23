@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Summary</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #f5f7fe 0%, #f0f3fc 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+        }
+        
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 2rem;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .check-icon {
+            width: 60px;
+            height: 60px;
+            background: #dcfce7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #166534;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+        }
+
+        h1 {
+            color: #12131a;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #6a6f82;
+            font-size: 1rem;
+        }
+
+        .booking-details {
+            background: #f8faff;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px solid #e8ecf5;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #6a6f82;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #12131a;
+            font-weight: 600;
+        }
+
+        .reference {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: #f0f4fe;
+            border-radius: 1rem;
+            color: #12131a;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #12131a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2a3ff2;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(42, 63, 242, 0.2);
+        }
+
+        .btn-secondary {
+            background: #f0f3fc;
+            color: #12131a;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .note {
+            text-align: center;
+            color: #8d94b0;
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 2rem 1.5rem;
+                border-radius: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.7rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+            }
+
+            .booking-details {
+                padding: 1.5rem;
+                margin: 1.5rem 0;
+            }
+
+            .detail-row {
+                padding: 0.8rem 0;
+            }
+
+            .reference {
+                font-size: 1rem;
+                padding: 0.8rem;
+                margin: 1.5rem 0;
+            }
+
+            .button-group {
+                gap: 0.8rem;
+            }
+
+            .btn {
+                padding: 0.8rem;
+                min-height: 44px;
+                font-size: 0.85rem;
+            }
+
+            .note {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.75rem;
+            }
+
+            .container {
+                padding: 1.5rem 1rem;
+                border-radius: 1.2rem;
+                box-shadow: 0 15px 30px -12px rgba(0,0,0,0.15);
+            }
+
+            .check-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+                margin: 0 auto 0.8rem;
+            }
+
+            .header {
+                margin-bottom: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.4rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .subtitle {
+                font-size: 0.8rem;
+            }
+
+            .reference {
+                font-size: 0.95rem;
+                padding: 0.7rem;
+                margin: 1.2rem 0;
+            }
+
+            .booking-details {
+                padding: 1.2rem;
+                margin: 1.2rem 0;
+                border-radius: 1rem;
+            }
+
+            .detail-row {
+                padding: 0.7rem 0;
+                font-size: 0.9rem;
+            }
+
+            .detail-label {
+                font-size: 0.85rem;
+            }
+
+            .detail-value {
+                font-size: 0.85rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+                gap: 0.6rem;
+                margin-top: 1.2rem;
+            }
+
+            .btn {
+                padding: 0.7rem;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+            }
+
+            .note {
+                font-size: 0.75rem;
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="check-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h1>Booking Confirmed!</h1>
+            <p class="subtitle">Your appointment has been successfully booked</p>
+        </div>
+
+        <div class="reference">
+            Reference: <span id="bookingRef">#STYLE-XXXX</span>
+        </div>
+
+        <div class="booking-details" id="bookingDetails">
+            <div class="detail-row">
+                <span class="detail-label">Service</span>
+                <span class="detail-value" id="detailService">Haircut</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Date</span>
+                <span class="detail-value" id="detailDate">Date</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Time</span>
+                <span class="detail-value" id="detailTime">Time</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Stylist</span>
+                <span class="detail-value" id="detailStylist">Any professional</span>
+            </div>
+        </div>
+
+        <p class="note" id="confirmationNote">
+            A confirmation email has been sent to your registered email address
+        </p>
+
+        <div class="button-group">
+            <button class="btn btn-secondary" onclick="window.location.href='/dashboard.html'">Back to Dashboard</button>
+            <button class="btn btn-primary" onclick="window.location.href='/booking.html'">Book Another</button>
+        </div>
+    </div>
+
+    <script src="api-utils.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = getUserFromSession();
+            if (!user) {
+                window.location.href = '/login.html';
+                return;
+            }
+        });
+    </script>
+</body>
+</html>

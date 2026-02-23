@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #f2f6fe 0%, #e9effb 100%);
+            padding: 2rem 1.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #12131a;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #6a6f82;
+            font-size: 1.1rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .service-card {
+            background: transparent;
+            border-radius: 1.5rem;
+            height: 320px;
+            perspective: 1000px;
+            transition: transform 0.3s ease;
+        }
+
+        .service-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: left;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .service-card.flipped .service-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .service-card-front,
+        .service-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .service-card-back {
+            transform: rotateY(180deg);
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .service-card:hover .service-card-front,
+        .service-card:hover .service-card-back {
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
+        }
+
+        .service-card-front .btn {
+            margin-top: auto;
+        }
+
+        .card-actions {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .btn-secondary {
+            background: #e9edf7;
+            color: #12131a;
+        }
+
+        .btn-secondary:hover {
+            background: #dfe5f3;
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #12131a;
+            margin-bottom: 0.5rem;
+        }
+
+        .service-description {
+            color: #6a6f82;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .service-price {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2a3ff2;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: block;
+            background: #12131a;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.8rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #2a3ff2;
+            transform: scale(1.02);
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #12131a;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #2a3ff2;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .nav-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+                margin-bottom: 1.5rem;
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 0.95rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .service-card {
+                height: 300px;
+            }
+
+            .service-card:hover {
+                transform: translateY(-4px);
+            }
+
+            .service-card-front,
+            .service-card-back {
+                padding: 1.5rem;
+                box-shadow: 0 5px 15px -5px rgba(0,0,0,0.1);
+            }
+
+            .service-icon {
+                font-size: 2rem;
+            }
+
+            .service-name {
+                font-size: 1.3rem;
+            }
+
+            .btn {
+                padding: 0.8rem 1.2rem;
+                min-height: 44px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.75rem;
+            }
+
+            header {
+                margin-bottom: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .subtitle {
+                font-size: 0.85rem;
+            }
+
+            .services-grid {
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .service-card {
+                height: 280px;
+                border-radius: 1rem;
+            }
+
+            .service-card-front,
+            .service-card-back {
+                padding: 1rem;
+                border-radius: 1rem;
+            }
+
+            .service-icon {
+                font-size: 1.8rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .service-name {
+                font-size: 1.1rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .service-description {
+                font-size: 0.85rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .service-price {
+                font-size: 1.1rem;
+                margin-bottom: 1rem;
+            }
+
+            .btn {
+                padding: 0.7rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/dashboard.html" class="nav-btn">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+
+        <header>
+            <h1>Our Services</h1>
+            <p class="subtitle">Choose from our premium grooming services</p>
+        </header>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-card-inner">
+                    <div class="service-card-front">
+                        <div class="service-icon">✂️</div>
+                        <div class="service-name">Haircut</div>
+                        <div class="service-price">$25</div>
+                        <button class="btn" type="button" onclick="flipServiceCard(event, this)">View Info</button>
+                    </div>
+                    <div class="service-card-back">
+                        <div class="service-name">Haircut</div>
+                        <div class="service-description">Professional haircut with classic or modern style</div>
+                        <div class="service-price">$25</div>
+                        <div class="card-actions">
+                            <button class="btn" type="button" onclick="bookService(event, 'Haircut')">Book Now</button>
+                            <button class="btn btn-secondary" type="button" onclick="flipServiceCard(event, this)">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-inner">
+                    <div class="service-card-front">
+                        <div class="service-icon">🧔</div>
+                        <div class="service-name">Beard Trim</div>
+                        <div class="service-price">$15</div>
+                        <button class="btn" type="button" onclick="flipServiceCard(event, this)">View Info</button>
+                    </div>
+                    <div class="service-card-back">
+                        <div class="service-name">Beard Trim</div>
+                        <div class="service-description">Precision beard trimming and shaping</div>
+                        <div class="service-price">$15</div>
+                        <div class="card-actions">
+                            <button class="btn" type="button" onclick="bookService(event, 'Beard Trim')">Book Now</button>
+                            <button class="btn btn-secondary" type="button" onclick="flipServiceCard(event, this)">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-inner">
+                    <div class="service-card-front">
+                        <div class="service-icon">🫧</div>
+                        <div class="service-name">Hair Wash</div>
+                        <div class="service-price">$10</div>
+                        <button class="btn" type="button" onclick="flipServiceCard(event, this)">View Info</button>
+                    </div>
+                    <div class="service-card-back">
+                        <div class="service-name">Hair Wash</div>
+                        <div class="service-description">Relaxing hair wash with premium products</div>
+                        <div class="service-price">$10</div>
+                        <div class="card-actions">
+                            <button class="btn" type="button" onclick="bookService(event, 'Hair Wash')">Book Now</button>
+                            <button class="btn btn-secondary" type="button" onclick="flipServiceCard(event, this)">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-inner">
+                    <div class="service-card-front">
+                        <div class="service-icon">🪮</div>
+                        <div class="service-name">Classic Shave</div>
+                        <div class="service-price">$20</div>
+                        <button class="btn" type="button" onclick="flipServiceCard(event, this)">View Info</button>
+                    </div>
+                    <div class="service-card-back">
+                        <div class="service-name">Classic Shave</div>
+                        <div class="service-description">Traditional straight razor shave</div>
+                        <div class="service-price">$20</div>
+                        <div class="card-actions">
+                            <button class="btn" type="button" onclick="bookService(event, 'Shave')">Book Now</button>
+                            <button class="btn btn-secondary" type="button" onclick="flipServiceCard(event, this)">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-inner">
+                    <div class="service-card-front">
+                        <div class="service-icon">🎨</div>
+                        <div class="service-name">Hair Coloring</div>
+                        <div class="service-price">$40</div>
+                        <button class="btn" type="button" onclick="flipServiceCard(event, this)">View Info</button>
+                    </div>
+                    <div class="service-card-back">
+                        <div class="service-name">Hair Coloring</div>
+                        <div class="service-description">Professional hair coloring service</div>
+                        <div class="service-price">$40</div>
+                        <div class="card-actions">
+                            <button class="btn" type="button" onclick="bookService(event, 'Hair Coloring')">Book Now</button>
+                            <button class="btn btn-secondary" type="button" onclick="flipServiceCard(event, this)">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <div class="service-card-inner">
+                    <div class="service-card-front">
+                        <div class="service-icon">🎁</div>
+                        <div class="service-name">Package Deal</div>
+                        <div class="service-price">$45</div>
+                        <button class="btn" type="button" onclick="flipServiceCard(event, this)">View Info</button>
+                    </div>
+                    <div class="service-card-back">
+                        <div class="service-name">Package Deal</div>
+                        <div class="service-description">Cut + Beard + Shave combo</div>
+                        <div class="service-price">$45</div>
+                        <div class="card-actions">
+                            <button class="btn" type="button" onclick="bookService(event, 'Package Deal')">Book Now</button>
+                            <button class="btn btn-secondary" type="button" onclick="flipServiceCard(event, this)">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="api-utils.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = getUserFromSession();
+            if (!user) {
+                window.location.href = '/login.html';
+            }
+        });
+
+        function selectService(serviceName) {
+            sessionStorage.setItem('selectedService', serviceName);
+            window.location.href = '/barbur.html';
+        }
+
+        function flipServiceCard(event, buttonElement) {
+            event.stopPropagation();
+            const cardElement = buttonElement.closest('.service-card');
+            cardElement.classList.toggle('flipped');
+        }
+
+        function bookService(event, serviceName) {
+            event.stopPropagation();
+            selectService(serviceName);
+        }
+    </script>
+</body>
+</html>

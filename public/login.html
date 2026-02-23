@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGIN</title>
+    <style>
+        /* --- CSS Variables --- */
+        :root {
+            --bg-gradient: linear-gradient(-45deg, #ffffff, #f1f5f9, #e2e8f0, #f8fafc);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --accent: #0f172a; /* Dark Slate */
+            --white: #ffffff;
+            --shadow-soft: 0 20px 40px -5px rgba(0, 0, 0, 0.05);
+            --font-main: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--bg-gradient);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- Main Container --- */
+        .container {
+            background-color: var(--white);
+            border-radius: 30px;
+            box-shadow: 0 14px 28px rgba(0,0,0,0.05), 0 10px 10px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+            width: 850px;
+            max-width: 100%;
+            min-height: 550px;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        /* --- Form Styling --- */
+        .form-container {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            transition: all 0.6s ease-in-out;
+        }
+
+        form {
+            background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 50px;
+            height: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-weight: 800;
+            margin-bottom: 10px;
+            font-size: 2rem;
+            letter-spacing: -1px;
+        }
+
+        span {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        input {
+            background-color: #f1f5f9;
+            border: none;
+            padding: 15px 20px;
+            margin: 8px 0;
+            width: 100%;
+            border-radius: 12px;
+            outline: none;
+            font-size: 0.9rem;
+            transition: box-shadow 0.3s;
+        }
+
+        input:focus {
+            box-shadow: 0 0 0 2px var(--accent);
+            background-color: #fff;
+        }
+
+        .btn {
+            border-radius: 25px;
+            background-color: var(--accent);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 15px 45px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: transform 80ms ease-in, background-color 0.3s;
+            border: none;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn:hover {
+            background-color: #1e293b;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        a.forgot {
+            color: var(--text-main);
+            font-size: 14px;
+            text-decoration: none;
+            margin: 15px 0;
+            font-weight: 600;
+            border-bottom: 1px solid transparent;
+        }
+
+        a.forgot:hover {
+            border-bottom: 1px solid var(--text-main);
+        }
+
+        /* --- Animation Logic (Slider) --- */
+        
+        /* Sign In (Default Left) */
+        .sign-in-container {
+            left: 0;
+            width: 50%;
+            z-index: 2;
+        }
+
+        /* Sign Up (Default Hidden Behind) */
+        .sign-up-container {
+            left: 0;
+            width: 50%;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        /* Active State: Sign Up Moves into View */
+        .container.right-panel-active .sign-in-container {
+            transform: translateX(100%);
+            opacity: 0; 
+        }
+
+        .container.right-panel-active .sign-up-container {
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 5;
+            animation: show 0.6s;
+        }
+
+        @keyframes show {
+            0%, 49.99% { opacity: 0; z-index: 1; }
+            50%, 100% { opacity: 1; z-index: 5; }
+        }
+
+        /* --- Overlay (The Moving Dark Panel) --- */
+        .overlay-container {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            transition: transform 0.6s ease-in-out;
+            z-index: 100;
+        }
+
+        .container.right-panel-active .overlay-container {
+            transform: translateX(-100%);
+        }
+
+        .overlay {
+            background: var(--accent);
+            background: linear-gradient(to right, #1e293b, #0f172a);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: 0 0;
+            color: #ffffff;
+            position: relative;
+            left: -100%;
+            height: 100%;
+            width: 200%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .container.right-panel-active .overlay {
+            transform: translateX(50%);
+        }
+
+        .overlay-panel {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 40px;
+            text-align: center;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .overlay-left {
+            transform: translateX(-20%);
+        }
+
+        .container.right-panel-active .overlay-left {
+            transform: translateX(0);
+        }
+
+        .overlay-right {
+            right: 0;
+            transform: translateX(0);
+        }
+
+        .container.right-panel-active .overlay-right {
+            transform: translateX(20%);
+        }
+
+        /* Ghost Button (Border Only) */
+        .btn.ghost {
+            background-color: transparent;
+            border-color: #ffffff;
+            border: 1px solid #ffffff;
+            margin-top: 20px;
+        }
+
+        .btn.ghost:hover {
+            background-color: #ffffff;
+            color: var(--accent);
+        }
+
+        .overlay-panel h1 {
+            color: white;
+        }
+
+        .overlay-panel p {
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 20px;
+            letter-spacing: 0.5px;
+            margin: 20px 0 30px;
+            opacity: 0.8;
+        }
+
+        /* --- Mobile Toggle Text --- */
+        .mobile-toggle {
+            display: none; /* Hidden on desktop */
+            margin-top: 25px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: var(--accent);
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        /* --- Mobile Optimization --- */
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+                min-height: auto;
+                display: flex;
+                flex-direction: column;
+                min-height: 600px;
+                border-radius: 20px;
+            }
+
+            body {
+                padding: 1rem;
+            }
+
+            .overlay-container {
+                display: none;
+            }
+
+            .form-container {
+                position: relative;
+                width: 100%;
+                height: auto;
+                transition: none;
+                padding: 2rem 1.5rem;
+                display: none;
+            }
+            
+            .form-container.mobile-active {
+                display: flex;
+                animation: fadeIn 0.5s;
+            }
+
+            form {
+                padding: 0;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+                margin-bottom: 0.8rem;
+            }
+
+            span {
+                font-size: 0.9rem;
+                margin-bottom: 2rem;
+            }
+
+            input {
+                padding: 0.85rem 1rem;
+                font-size: 16px;
+                margin: 0.6rem 0;
+                border-radius: 10px;
+                min-height: 44px;
+            }
+
+            .btn {
+                padding: 0.85rem 2rem;
+                min-height: 44px;
+                font-size: 0.9rem;
+                border-radius: 20px;
+                margin-top: 1rem;
+            }
+
+            a.forgot {
+                font-size: 0.85rem;
+                margin: 1rem 0;
+            }
+
+            .mobile-toggle {
+                display: block;
+                font-size: 0.85rem;
+                margin-top: 1.5rem;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 95%;
+                min-height: 550px;
+                border-radius: 15px;
+            }
+
+            body {
+                padding: 0.75rem;
+            }
+
+            .form-container {
+                padding: 1.5rem 1rem;
+            }
+
+            form {
+                padding: 0;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+            }
+
+            span {
+                font-size: 0.8rem;
+                margin-bottom: 1.5rem;
+            }
+
+            input {
+                padding: 0.75rem 0.9rem;
+                font-size: 16px;
+                margin: 0.5rem 0;
+                border-radius: 8px;
+                min-height: 44px;
+            }
+
+            input:focus {
+                box-shadow: 0 0 0 2px var(--accent);
+                background-color: #fff;
+            }
+
+            .btn {
+                padding: 0.75rem 1.5rem;
+                min-height: 44px;
+                font-size: 0.85rem;
+                border-radius: 15px;
+                margin-top: 0.8rem;
+                cursor: pointer;
+                width: 100%;
+            }
+
+            .btn:active {
+                transform: scale(0.95);
+            }
+
+            a.forgot {
+                font-size: 0.8rem;
+                margin: 0.8rem 0;
+            }
+
+            .mobile-toggle {
+                font-size: 0.8rem;
+                margin-top: 1.2rem;
+            }
+
+            p#signupError,
+            p#signinError,
+            p#signupSuccess,
+            p#signinSuccess {
+                font-size: 0.8rem;
+                margin-top: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="container">
+        
+        <!-- Sign Up Form -->
+        <div class="form-container sign-up-container" id="signUpFormMobile">
+            <form id="signupForm" onsubmit="handleSignup(event)">
+                <h1>Create Account</h1>
+                <span>Use your email for registration</span>
+                <input type="text" id="firstName" name="firstName" placeholder="First Name" required />
+                <input type="text" id="lastName" name="lastName" placeholder="Last Name" required />
+                <input type="email" id="signupEmail" name="email" placeholder="Email" required />
+                <input type="tel" id="phone" name="phone" placeholder="Phone" />
+                <input type="password" id="signupPassword" name="password" placeholder="Password" required />
+                <button class="btn" type="submit">Sign Up</button>
+                <p class="mobile-toggle" onclick="toggleMobile('signIn')">Already have an account? Sign In</p>
+                <p id="signupError" style="color: red; font-size: 0.85rem; margin-top: 10px; display: none;"></p>
+                <p id="signupSuccess" style="color: green; font-size: 0.85rem; margin-top: 10px; display: none;"></p>
+            </form>
+        </div>
+
+        <!-- Sign In Form -->
+        <div class="form-container sign-in-container mobile-active" id="signInFormMobile">
+            <form id="signinForm" onsubmit="handleSignin(event)">
+                <h1>STYLE.</h1>
+                <span>Sign in to your account</span>
+                <input type="email" id="signinEmail" name="email" placeholder="Email" required />
+                <input type="password" id="signinPassword" name="password" placeholder="Password" required />
+                <a href="#" class="forgot">Forgot your password?</a>
+                <button class="btn" type="submit">Sign In</button>
+                <p class="mobile-toggle" onclick="toggleMobile('signUp')">Don't have an account? Sign Up</p>
+                <p id="signinError" style="color: red; font-size: 0.85rem; margin-top: 10px; display: none;"></p>
+                <p id="signinSuccess" style="color: green; font-size: 0.85rem; margin-top: 10px; display: none;"></p>
+            </form>
+        </div>
+
+        <!-- Overlay Container (Desktop Animation) -->
+        <div class="overlay-container">
+            <div class="overlay">
+                <!-- Panel Left (Shows when Sign Up is active) -->
+                <div class="overlay-panel overlay-left">
+                    <h1>Welcome Back!</h1>
+                    <p>To keep connected with us please login with your personal info</p>
+                    <button class="btn ghost" id="signIn">Sign In</button>
+                </div>
+                <!-- Panel Right (Shows when Sign In is active) -->
+                <div class="overlay-panel overlay-right">
+                    <h1>Hello,BUDDY</h1>
+                    <p>Enter your personal details and start your grooming journey with STYLE.</p>
+                    <button class="btn ghost" id="signUp">Sign Up</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="api-utils.js"></script>
+    <script>
+        // Desktop Animation Logic
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        const container = document.getElementById('container');
+
+        signUpButton.addEventListener('click', () => {
+            container.classList.add("right-panel-active");
+        });
+
+        signInButton.addEventListener('click', () => {
+            container.classList.remove("right-panel-active");
+        });
+
+        // Mobile Switch Logic
+        function toggleMobile(target) {
+            const signInForm = document.getElementById('signInFormMobile');
+            const signUpForm = document.getElementById('signUpFormMobile');
+
+            if (target === 'signUp') {
+                signInForm.classList.remove('mobile-active');
+                signUpForm.classList.add('mobile-active');
+            } else {
+                signUpForm.classList.remove('mobile-active');
+                signInForm.classList.add('mobile-active');
+            }
+        }
+
+        // Handle Signup Form Submission
+        async function handleSignup(event) {
+            event.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('signupEmail').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('signupPassword').value;
+            const errorDiv = document.getElementById('signupError');
+            const successDiv = document.getElementById('signupSuccess');
+
+            try {
+                errorDiv.style.display = 'none';
+                successDiv.style.display = 'none';
+
+                const response = await createUser({
+                    firstName,
+                    lastName,
+                    email,
+                    phone,
+                    password,
+                    role: 'customer'
+                });
+
+                if (response.message && response.message.includes('successfully')) {
+                    successDiv.textContent = '✓ Account created successfully! Redirecting...';
+                    successDiv.style.display = 'block';
+                    saveUserToSession(response.user);
+                    
+                    // Redirect to dashboard after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html';
+                    }, 2000);
+                } else {
+                    errorDiv.textContent = response.message || 'Signup failed';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Error: ' + error.message;
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // Handle Signin Form Submission
+        async function handleSignin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('signinEmail').value;
+            const password = document.getElementById('signinPassword').value;
+            const errorDiv = document.getElementById('signinError');
+            const successDiv = document.getElementById('signinSuccess');
+
+            try {
+                errorDiv.style.display = 'none';
+                successDiv.style.display = 'none';
+
+                const response = await loginUser(email, password);
+
+                if (response.message && response.message.includes('successful')) {
+                    successDiv.textContent = '✓ Login successful! Redirecting...';
+                    successDiv.style.display = 'block';
+                    saveUserToSession(response.user);
+                    
+                    // Redirect to dashboard after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html';
+                    }, 2000);
+                } else {
+                    errorDiv.textContent = response.message || 'Login failed';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Error: ' + error.message;
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // Check if user is already logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = getUserFromSession();
+            if (user) {
+                // User already logged in, redirect to dashboard
+                window.location.href = '/dashboard.html';
+            }
+        });
+    </script>
+</body>
+</html>
