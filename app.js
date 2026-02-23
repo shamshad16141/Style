@@ -15,12 +15,22 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Initialize database connection once at startup
+let dbInitialized = false;
+
 app.use('/api', async (req, res, next) => {
   try {
-    await connectDB();
+    if (!dbInitialized) {
+      await connectDB();
+      dbInitialized = true;
+    }
     next();
   } catch (error) {
-    next(error);
+    console.error('Database connection failure:', error.message);
+    res.status(503).json({ 
+      message: 'Database temporarily unavailable', 
+      error: 'Please try again in a moment'
+    });
   }
 });
 

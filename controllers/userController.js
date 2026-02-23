@@ -83,29 +83,43 @@ exports.loginUser = async (req, res) => {
     const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
 
     if (!normalizedEmail || !password) {
-      return res.status(400).json({ message: 'email and password are required' });
+      return res.status(400).json({ message: 'Email and password are required' });
     }
     
+    console.log(`🔍 Login attempt for email: ${normalizedEmail}`);
+    
+    // First try exact match
     let user = await User.findOne({ email: normalizedEmail });
+    
+    // If not found, try case-insensitive with whitespace tolerance
     if (!user) {
+      console.log('🔍 Trying legacy email patterns...');
       const legacyEmailPattern = new RegExp(`^\\s*${escapeRegex(normalizedEmail)}\\s*$`, 'i');
       user = await User.findOne({ email: { $regex: legacyEmailPattern } });
     }
+    
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      console.log(`❌ User not found for email: ${normalizedEmail}`);
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
+
+    console.log(`✅ User found: ${user.email}`);
 
     // Simple password check (in production, use bcrypt)
     if (user.password !== password) {
-      return res.status(401).json({ message: 'Invalid password' });
+      console.log('❌ Invalid password');
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
 
+    console.log(`✅ Login successful for: ${user.email}`);
+    
     res.status(200).json({ 
       message: 'Login successful', 
       user: { ...user.toObject(), password: undefined },
       token: 'jwt_token_here' // Add JWT token generation here
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('❌ Login error:', error.message);
+    res.status(500).json({ message: 'Internal server error during login' });
   }
 };
