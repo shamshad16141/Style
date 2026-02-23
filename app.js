@@ -9,21 +9,26 @@ dotenv.config();
 
 const app = express();
 
-connectDB().catch((error) => {
-  console.error('MongoDB connection initialization failed:', error.message);
-});
-
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(express.static(path.join(process.cwd(), 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/api', async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/bookings', require('./routes/bookingRoutes'));
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(process.cwd(), 'public', 'login.html'));
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
 app.use((req, res) => {

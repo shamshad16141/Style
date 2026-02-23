@@ -8,9 +8,16 @@ const connectDB = async () => {
   }
 
   try {
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/style';
+    const isProduction = process.env.NODE_ENV === 'production' || !!process.env.VERCEL;
+    const mongoURI = process.env.MONGODB_URI || (isProduction ? null : 'mongodb://localhost:27017/style');
+
+    if (!mongoURI) {
+      throw new Error('MONGODB_URI is required in production environment');
+    }
     
-    await mongoose.connect(mongoURI);
+    await mongoose.connect(mongoURI, {
+      serverSelectionTimeoutMS: 5000,
+    });
     isConnected = true;
     
     console.log('MongoDB connected successfully');
