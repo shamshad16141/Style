@@ -10,7 +10,13 @@ async function createUser(userData) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
     });
-    return await response.json();
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to create user');
+    }
+
+    return data;
   } catch (error) {
     console.error('Error creating user:', error);
     throw error;
@@ -24,7 +30,13 @@ async function loginUser(email, password) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
-    return await response.json();
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || 'Login failed');
+    }
+
+    return data;
   } catch (error) {
     console.error('Error logging in:', error);
     throw error;

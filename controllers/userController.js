@@ -1,5 +1,7 @@
 const User = require('../models/User');
 
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 // Get all users
 exports.getAllUsers = async (req, res) => {
   try {
@@ -25,17 +27,25 @@ exports.getUserById = async (req, res) => {
 exports.createUser = async (req, res) => {
   try {
     const { firstName, lastName, email, phone, password, role } = req.body;
+    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
 
-    if (!firstName || !lastName || !email || !password) {
+    if (!firstName || !lastName || !normalizedEmail || !password) {
       return res.status(400).json({ message: 'firstName, lastName, email, and password are required' });
     }
     
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({ email: normalizedEmail });
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    const user = new User({ firstName, lastName, email, phone, password, role });
+    const user = new User({
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: normalizedEmail,
+      phone,
+      password,
+      role,
+    });
     await user.save();
     
     res.status(201).json({ message: 'User created successfully', user: { ...user.toObject(), password: undefined } });
@@ -70,12 +80,17 @@ exports.deleteUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
 
-    if (!email || !password) {
+    if (!normalizedEmail || !password) {
       return res.status(400).json({ message: 'email and password are required' });
     }
     
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email: normalizedEmail });
+    if (!user) {
+      const legacyEmailPattern = new RegExp(`^\\s*${escapeRegex(normalizedEmail)}\\s*$`, 'i');
+      user = await User.findOne({ email: { $regex: legacyEmailPattern } });
+    }
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
