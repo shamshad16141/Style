@@ -25,6 +25,10 @@ exports.getUserById = async (req, res) => {
 exports.createUser = async (req, res) => {
   try {
     const { firstName, lastName, email, phone, password, role } = req.body;
+
+    if (!firstName || !lastName || !email || !password) {
+      return res.status(400).json({ message: 'firstName, lastName, email, and password are required' });
+    }
     
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -66,6 +70,10 @@ exports.deleteUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'email and password are required' });
+    }
     
     const user = await User.findOne({ email });
     if (!user) {
