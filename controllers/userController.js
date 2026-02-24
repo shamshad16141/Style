@@ -105,8 +105,9 @@ exports.loginUser = async (req, res) => {
 
     console.log(`✅ User found: ${user.email}`);
 
-    // Simple password check (in production, use bcrypt)
-    if (user.password !== password) {
+    // Compare password using bcrypt
+    const passwordMatch = await user.comparePassword(password);
+    if (!passwordMatch) {
       console.log('❌ Invalid password');
       return res.status(401).json({ message: 'Invalid email or password' });
     }
