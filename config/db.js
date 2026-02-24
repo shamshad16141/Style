@@ -24,15 +24,16 @@ const connectDB = async () => {
       const mongoURI = process.env.MONGODB_URI || (isProduction ? null : 'mongodb://localhost:27017/style');
 
       if (!mongoURI) {
-        throw new Error('MONGODB_URI is required in production environment');
+        throw new Error('MONGODB_URI environment variable is not set. Please configure it in Vercel Settings > Environment Variables');
       }
       
-      console.log('Connecting to MongoDB...');
+      console.log('🔗 Connecting to MongoDB...');
       await mongoose.connect(mongoURI, {
-        serverSelectionTimeoutMS: 10000,
+        serverSelectionTimeoutMS: 5000,
         connectTimeoutMS: 10000,
+        socketTimeoutMS: 45000,
         maxPoolSize: 10,
-        minPoolSize: 5,
+        minPoolSize: 2,
         maxIdleTimeMS: 30000,
         bufferCommands: false,
         bufferMaxEntries: 0,
