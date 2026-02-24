@@ -4,45 +4,56 @@ let isConnected = false;
 let connectionPromise = null;
 
 const connectDB = async () => {
+  // If already connected and healthy, return immediately
   if (isConnected && mongoose.connection.readyState === 1) {
+    console.log('✅ Using existing MongoDB connection');
     return mongoose.connection;
   }
   
   // If connection is in progress, wait for it
   if (connectionPromise) {
+    console.log('⏳ Waiting for in-progress MongoDB connection...');
     return connectionPromise;
   }
 
   connectionPromise = new Promise(async (resolve, reject) => {
     try {
-      // Close existing connection if any
+      // Ensure we start fresh
       if (mongoose.connection.readyState !== 0) {
+        console.log('🔄 Closing existing connection...');
         await mongoose.disconnect();
       }
 
-      const isProduction = process.env.NODE_ENV === 'production' || !!process.env.VERCEL;
-      const mongoURI = process.env.MONGODB_URI || (isProduction ? null : 'mongodb://localhost:27017/style');
-
+      const mongoURI = process.env.MONGODB_URI;
+      
       if (!mongoURI) {
-        throw new Error('MONGODB_URI environment variable is not set. Please configure it in Vercel Settings > Environment Variables');
+        throw new Error(
+          '❌ MONGODB_URI not found! ' +
+          'Make sure to add it in Vercel Settings > Environment Variables'
+        );
       }
       
-      console.log('🔗 Connecting to MongoDB...');
-      await mongoose.connect(mongoURI, {
-        serverSelectionTimeoutMS: 5000,
-        connectTimeoutMS: 10000,
-        socketTimeoutMS: 45000,
-        maxPoolSize: 10,
-        minPoolSize: 2,
-        maxIdleTimeMS: 30000,
+      console.log('🔗 Attempting MongoDB connection...');
+      console.log('📍 Database:', mongoURI.includes('style') ? 'style ✓' : 'unknown ✗');
+      
+      const connection = await mongoose.connect(mongoURI, {
+        // Aggressive timeouts for serverless
+        serverSelectionTimeoutMS: 3000,
+        connectTimeoutMS: 3000,
+        socketTimeoutMS: 3000,
+        maxPoolSize: 5,
+        minPoolSize: 1,
+        maxIdleTimeMS: 10000,
         bufferCommands: false,
         bufferMaxEntries: 0,
+        retryWrites: true,
+        w: 'majority',
       });
       
       isConnected = true;
-      console.log('✅ MongoDB connected successfully');
+      console.log('✅ MongoDB connected successfully!');
       
-      // Handle connection events
+      // Handle disconnection
       mongoose.connection.on('disconnected', () => {
         console.log('❌ MongoDB disconnected');
         isConnected = false;
@@ -50,14 +61,14 @@ const connectDB = async () => {
       });
       
       mongoose.connection.on('error', (error) => {
-        console.error('❌ MongoDB connection error:', error.message);
+        console.error('❌ MongoDB error:', error.message);
         isConnected = false;
         connectionPromise = null;
       });
       
-      resolve(mongoose.connection);
+      resolve(connection);
     } catch (error) {
-      console.error('❌ MongoDB connection error:', error.message);
+      console.error('❌ MongoDB connection failed:', error.message);
       isConnected = false;
       connectionPromise = null;
       reject(error);
@@ -68,3 +79,4 @@ const connectDB = async () => {
 };
 
 module.exports = connectDB;
+

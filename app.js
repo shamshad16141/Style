@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const path = require('path');
+const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 
 dotenv.config();
@@ -16,15 +17,24 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Health check endpoint
+// Health check endpoint (no DB required)
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+  });
 });
 
 // Initialize database connection once at startup
 let dbInitialized = false;
 
 app.use('/api', async (req, res, next) => {
+  // Skip DB init for health check
+  if (req.path === '/health') {
+    return next();
+  }
+  
   try {
     if (!dbInitialized) {
       console.log('📡 Initializing database connection...');
