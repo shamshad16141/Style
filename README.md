@@ -135,14 +135,4 @@ fetch('/api/users', {
 - **Module not found**: Run `npm install` again
 - **CORS errors**: Configure CORS settings in `server.js` if needed
 
-### Deploy on Vercel
 
-1. Push this project to GitHub.
-2. Import the repository in Vercel.
-3. In Vercel project settings, add environment variable:
-  - `MONGODB_URI` = your MongoDB Atlas connection string
-4. Deploy.
-
-Notes:
-- `vercel.json` is already configured to route all requests to the serverless Express app.
-- Frontend API calls use relative paths (`/api/...`), so they work in Vercel without changing code.
