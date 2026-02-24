@@ -28,6 +28,17 @@ app.get('/api/health', (req, res) => {
 
 // Initialize database connection once at startup
 let dbInitialized = false;
+let dbError = null;
+
+// Try to connect immediately on startup
+connectDB().then(() => {
+  dbInitialized = true;
+  dbError = null;
+  console.log('🚀 Initial database connection successful');
+}).catch(err => {
+  dbError = err;
+  console.error('⚠️ Initial DB connection failed, will retry on first request:', err.message);
+});
 
 app.use('/api', async (req, res, next) => {
   // Skip DB init for health check
@@ -37,17 +48,18 @@ app.use('/api', async (req, res, next) => {
   
   try {
     if (!dbInitialized) {
-      console.log('📡 Initializing database connection...');
+      console.log('📡 Attempting database connection...');
       await connectDB();
       dbInitialized = true;
-      console.log('✅ Database initialized');
+      dbError = null;
+      console.log('✅ Database connected');
     }
     next();
   } catch (error) {
-    console.error('❌ Database connection failure:', error.message);
-    res.status(503).json({ 
-      message: 'Database temporarily unavailable', 
-      error: error.message
+    console.error('❌ Database unavailable:', error.message);
+    return res.status(503).json({ 
+      message: 'Database temporarily unavailable',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
