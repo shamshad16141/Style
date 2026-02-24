@@ -9,11 +9,17 @@ dotenv.config();
 
 const app = express();
 
+// Middleware
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
 
 // Initialize database connection once at startup
 let dbInitialized = false;
@@ -21,15 +27,17 @@ let dbInitialized = false;
 app.use('/api', async (req, res, next) => {
   try {
     if (!dbInitialized) {
+      console.log('📡 Initializing database connection...');
       await connectDB();
       dbInitialized = true;
+      console.log('✅ Database initialized');
     }
     next();
   } catch (error) {
-    console.error('Database connection failure:', error.message);
+    console.error('❌ Database connection failure:', error.message);
     res.status(503).json({ 
       message: 'Database temporarily unavailable', 
-      error: 'Please try again in a moment'
+      error: error.message
     });
   }
 });
@@ -45,9 +53,13 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
+// Global error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Internal server error', error: err.message });
+  console.error('❌ Unhandled error:', err);
+  res.status(500).json({ 
+    message: 'Internal server error', 
+    error: process.env.NODE_ENV === 'production' ? 'Server error' : err.message 
+  });
 });
 
 module.exports = app;
