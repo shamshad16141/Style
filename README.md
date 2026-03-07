@@ -1,12 +1,13 @@
-# Style Saloon - Node.js & MongoDB Backend
+# Style Saloon - TypeScript, Node.js & MongoDB
 
 ## Project Setup
 
-This is a full-stack application with an HTML frontend and Node.js backend with MongoDB database.
+This is a full-stack application completely written in **TypeScript**, featuring an HTML/TS frontend and a Node.js backend with a MongoDB database.
 
 ### Project Structure
 ```
-├── public/               # HTML frontend files
+├── public/               # HTML and TypeScript frontend files (compiled to JS)
+
 ├── api/                 # Serverless API entrypoint
 ├── config/              # Database configuration
 ├── models/              # MongoDB schemas
@@ -48,9 +49,14 @@ This is a full-stack application with an HTML frontend and Node.js backend with 
    NODE_ENV=development
    ```
 
-4. **Build and start the server**
+4. **Build the TypeScript application**
+   ```bash
+   # Builds both backend (tsc) and frontend (tsc -p tsconfig.frontend.json)
+   npm run build
+   ```
+
+5. **Start the server**
   ```bash
-  npm run build
   npm start
   ```
   Or for development with auto-reload:
