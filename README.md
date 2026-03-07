@@ -7,12 +7,14 @@ This is a full-stack application with an HTML frontend and Node.js backend with 
 ### Project Structure
 ```
 ├── public/               # HTML frontend files
+├── api/                 # Serverless API entrypoint
 ├── config/              # Database configuration
 ├── models/              # MongoDB schemas
 ├── controllers/         # Business logic
 ├── routes/              # API routes
 ├── middleware/          # Custom middleware (optional)
-├── server.js            # Main server file
+├── server.ts            # Main server file
+├── tsconfig.json        # TypeScript config
 ├── package.json         # Node dependencies
 └── .env                 # Environment variables
 ```
@@ -46,11 +48,12 @@ This is a full-stack application with an HTML frontend and Node.js backend with 
    NODE_ENV=development
    ```
 
-4. **Start the server**
-   ```bash
-   npm start
-   ```
-   Or for development with auto-reload:
+4. **Build and start the server**
+  ```bash
+  npm run build
+  npm start
+  ```
+  Or for development with auto-reload:
    ```bash
    npm run dev
    ```
@@ -133,6 +136,6 @@ fetch('/api/users', {
 - **MongoDB connection error**: Make sure MongoDB is running and the connection string is correct
 - **Port already in use**: Change `PORT` in `.env` file
 - **Module not found**: Run `npm install` again
-- **CORS errors**: Configure CORS settings in `server.js` if needed
+- **CORS errors**: Configure CORS settings in `app.ts` if needed
 
 

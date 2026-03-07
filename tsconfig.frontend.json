@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "module": "none",
+    "lib": ["ES2021", "DOM"],
+    "strict": false,
+    "noEmitOnError": true,
+    "skipLibCheck": true,
+    "types": [],
+    "rootDir": "public",
+    "outDir": "public"
+  },
+  "include": ["public/**/*.ts"],
+  "exclude": ["public/**/*.js"]
+}

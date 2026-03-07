@@ -501,24 +501,6 @@
     </div>
 
     <script src="api-utils.js"></script>
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const user = getUserFromSession();
-            if (!user) {
-                window.location.href = '/login.html';
-            }
-        });
-
-        function bookWithBarber(barberName) {
-            sessionStorage.setItem('selectedBarber', barberName);
-            window.location.href = '/booking.html';
-        }
-
-        function flipBarberCard(event, buttonElement) {
-            event.stopPropagation();
-            const cardElement = buttonElement.closest('.barber-card');
-            cardElement.classList.toggle('flipped');
-        }
-    </script>
+    <script src="scripts/barbur.js"></script>
 </body>
 </html>

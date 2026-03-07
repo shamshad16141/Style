@@ -1,53 +1,65 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 let isConnected = false;
+let connectPromise: Promise<mongoose.Mongoose> | null = null;
 
-const connectDB = async () => {
-  // If already connected and healthy, return immediately
+const connectDB = async (): Promise<mongoose.Mongoose> => {
   if (isConnected && mongoose.connection.readyState === 1) {
     console.log('✅ Using existing MongoDB connection');
-    return mongoose.connection;
+    return mongoose;
   }
-  
+
+  if (mongoose.connection.readyState === 1) {
+    isConnected = true;
+    return mongoose;
+  }
+
+  if (mongoose.connection.readyState === 2 && connectPromise) {
+    return connectPromise;
+  }
+
   try {
     const mongoURI = process.env.MONGODB_URI;
-    
+
     if (!mongoURI) {
       throw new Error('MONGODB_URI not found in environment variables!');
     }
-    
+
     console.log('🔗 Connecting to MongoDB Atlas...');
-    
-    const connection = await mongoose.connect(mongoURI, {
+
+    connectPromise = mongoose.connect(mongoURI, {
       serverSelectionTimeoutMS: 10000,
       connectTimeoutMS: 10000,
       socketTimeoutMS: 30000,
       maxPoolSize: 10,
       retryWrites: true,
-      w: 'majority',
+      w: 'majority'
     });
-    
+
+    const connection = await connectPromise;
+
     isConnected = true;
     console.log('✅ MongoDB connected successfully!');
-    
-    // Handle disconnection
+
     mongoose.connection.on('disconnected', () => {
       console.log('⚠️ MongoDB disconnected');
       isConnected = false;
     });
-    
-    mongoose.connection.on('error', (error) => {
+
+    mongoose.connection.on('error', (error: Error) => {
       console.error('❌ MongoDB connection error:', error.message);
       isConnected = false;
     });
-    
+
     return connection;
   } catch (error) {
-    console.error('❌ MongoDB connection failed:', error.message);
+    const dbError = error as Error;
+    console.error('❌ MongoDB connection failed:', dbError.message);
     isConnected = false;
-    throw error;
+    throw dbError;
+  } finally {
+    connectPromise = null;
   }
 };
 
-module.exports = connectDB;
-
+export default connectDB;

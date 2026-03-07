@@ -2,11 +2,14 @@
   "name": "style",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "build": "tsc && npm run build:frontend",
+    "build:frontend": "tsc -p tsconfig.frontend.json",
+    "start": "node dist/server.js",
+    "dev": "nodemon --watch . --ext ts --exec ts-node server.ts",
+    "check:db": "ts-node test-db.ts"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +29,13 @@
     "serverless-http": "^3.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "@types/bcryptjs": "^2.4.6",
+    "@types/body-parser": "^1.19.6",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.4",
+    "@types/node": "^24.6.1",
+    "nodemon": "^3.0.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }
